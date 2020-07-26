@@ -1,0 +1,25 @@
+<!-- <h1>{{window.location.hash == '#init'? 'Initiator':'Attender'}}</h1> -->
+<!-- <button type="button" (click)="startVideo()">start video</button> -->
+<h1 *ngIf="username != ''">{{username}}</h1>
+<button type="button" (click)="_makePeer()">Connect to peer</button>
+<div class="row" [style.visibility]="(vidstart) ? 'visible' : 'hidden'">
+  <div class="column">
+    <video #userVid src=""></video>
+    <button type="button" (click)="muteVideo()">Mute/Unmute</button>
+  </div>
+  <div class="column">
+    <video #peerVid src=""></video>
+  </div>
+</div>
+<input type="text" [(ngModel)]="username" placeholder="type name..." />
+<button type="button" (click)="setname()">set name</button>
+<br>
+<br>
+<input type="text" [(ngModel)]="userinput" placeholder="type message..." />
+<button type="button" [disabled]="username == ''" (click)="send()">Send</button>
+<br>
+<br>
+<p>Messages:</p>
+<div *ngFor="let msg of msgs">
+  <b>{{msg.user}}</b> : {{msg.message}}
+</div>

@@ -5,13 +5,14 @@ var io = require('./node_modules/socket.io')(http);
 
 http.listen(3000,"127.0.0.1");
 
-let clients = []
+var clients = []
 
 io.on("connection", socket => {
     console.log('connected....');
     socket.on('setUsername', (data) => {
         if(data) {
             clients.push(data);
+            console.log(clients.indexOf(data), clients);
             socket.emit('callPeer', {username: data});
             try {
                 // let index = clients.indexOf(data);

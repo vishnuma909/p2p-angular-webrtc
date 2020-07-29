@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import * as io from 'socket.io-client';
 import SimplePeer from 'simple-peer';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
   showVideo: any = false;
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
   peerVideo: any = false;
   peer: any = {}
   window: any = window;
+  isSet: any = false;
   @ViewChild('userVid') userVid: ElementRef;
   @ViewChild('peerVid') peerVid: ElementRef;
   vidstart: any = false;
@@ -29,7 +31,6 @@ export class AppComponent implements OnInit {
     // this.socket = io();
   }
   ngOnInit() {
-    this.startVideo();
     this.setSocket(this.socket)
   }
 
@@ -57,6 +58,10 @@ export class AppComponent implements OnInit {
     this.initvidref.muted = !this.initvidref.muted;
   }
 
+  mutePeerVideo() {
+    this.peervidref.muted = !this.peervidref.muted;
+  }
+
   setname() {
     if(this.username != '') {
       this.socket.emit('setUsername', this.username)
@@ -73,6 +78,8 @@ export class AppComponent implements OnInit {
     });
     socket.on('callPeer', (data) => {
       console.log('userset', 'success', data)
+      this.isSet = true;
+      this.startVideo();
       //this._makePeer();
     });
     socket.on('newmsg', (data) => {

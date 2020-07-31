@@ -11,15 +11,16 @@ io.on("connection", socket => {
     console.log('connected....');
     socket.on('setUsername', (data) => {
         if(data) {
-            clients.push(data);
-            console.log(clients.indexOf(data), clients);
-            socket.emit('callPeer', {username: data});
             try {
-                // let index = clients.indexOf(data);
-                // if(index >= 0) {
-                // }else {
-                //     socket.emit('userExists', data + ' username is taken! Try some other username.');
-                // }
+                let index = clients.indexOf(data);
+                if(index == -1) {
+                    clients.push({name: data, id: socket.id});
+                    console.log(clients.indexOf(data), clients);
+                    socket.join(socket.id);
+                    socket.emit('callPeer', {client: data});
+                }else {
+                    socket.emit('userExists', data + ' username is taken! Try some other username.');
+                }
             } catch (err) {
                 socket.emit('user_error', err)
             }
@@ -27,17 +28,6 @@ io.on("connection", socket => {
     })
     socket.on('msg', function(data) {
         io.sockets.emit('newmsg', data);
-    })
-    socket.on("NewClient", () => {
-        console.log('new client')
-        if (clients < 2) {
-            if (clients == 1) {
-                socket.emit('CreatePeer')
-            }
-        }
-        else
-            socket.emit('SessionActive')
-        clients++;
     })
     
     socket.on('Offer', (offer)=>{
@@ -51,9 +41,12 @@ io.on("connection", socket => {
     socket.on('disconnect', ()=>{
         console.log('disconneting')
         if (clients.length > 0) {
-            if (clients.length <= 2)
+            if (clients.length <= 2){
+                socket.leave(socket.id);
+                clients.splice(clients.length-1, 1);
                 socket.broadcast.emit("Disconnect")
-            clients.slice(clients.length-1, 1);
+            }
         }
+        console.log(clients)
     })
 })

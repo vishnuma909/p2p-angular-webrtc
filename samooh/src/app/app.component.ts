@@ -93,7 +93,13 @@ export class AppComponent implements OnInit {
     })
     socket.on('BackOffer', (offer) => {this._frontAnswer(offer)})
     socket.on('BackAnswer', (answer) => {this._signalAnswer(answer)})
-    // socket.on('Disconnect', this._removePeer)
+    socket.on('Disconnect', () => {this._removePeer()})
+  }
+
+  checkEnter(e) {
+    if(e) {
+      (e.key === 'Enter' || e.keyCode === 13) ? this.send() : '';
+    }
   }
 
   send() {
@@ -125,6 +131,7 @@ export class AppComponent implements OnInit {
       }catch(err) {
         this.peervidref.src = window.URL.createObjectURL(stream)
       }
+      this.peerVideo = true;
       this.peervidref.muted = true;
       this.peervidref.play();
     }

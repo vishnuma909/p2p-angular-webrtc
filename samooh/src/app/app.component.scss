@@ -13,6 +13,7 @@
 .column {
     flex: 33.33%;
     padding: 5px;
+    position: relative;
 }
 
 .name_container {
@@ -28,12 +29,25 @@
         text-align: center;
     }
     .user_btn {
-        position: relative;
+        position: absolute;
         top: 0;
         left: 0;
-        opacity: 0.5;
     }
     #peer_connect {
         text-align: center;
     }
+}
+.tp_container {
+    height: 100%;
+    mat-sidenav {
+        width: 200px;
+    }
+    mat-sidenav-content {
+        margin-left: 200px;
+    }
+}
+.message_area {
+    position: absolute;
+    bottom: 0;
+    padding-left: 5px;
 }

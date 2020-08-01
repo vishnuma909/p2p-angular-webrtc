@@ -13,8 +13,8 @@ export class AppComponent implements OnInit {
   username: any = ''
   userinput: any = ""
   client: any = {}
-  initvidref: any ;
-  peervidref: any ;
+  initvidref: any = {muted: false, isplay: true} ;
+  peervidref: any = {muted: false, isplay: true} ;
   socket: any;
   msgs: any = []
   peerVideo: any = false;
@@ -51,6 +51,7 @@ export class AppComponent implements OnInit {
         uservid['src'] = window.URL.createObjectURL(stream);
       }
       uservid.play();
+      this.initvidref.isplay = true;
     }).catch((error) => {console.log(error)})
   }
 
@@ -60,6 +61,36 @@ export class AppComponent implements OnInit {
 
   mutePeerVideo() {
     this.peervidref.muted = !this.peervidref.muted;
+  }
+
+  playpause(type) {
+    if(type == 'user') {
+      if(!this.initvidref.isplay) {
+        this.initvidref.play()
+        this.initvidref.isplay = true
+      }else {
+        this.initvidref.pause()
+        this.initvidref.isplay = false
+      }
+    }else {
+      if(!this.peervidref.isplay) {
+        this.peervidref.play()
+        this.peervidref.isplay = true
+      }else {
+        this.peervidref.pause()
+        this.peervidref.isplay = false
+      }
+    }
+  }
+
+  checkIfMe(value) {
+    if(value) {
+      if(value == this.username) {
+        return 'you';
+      }else {
+        return value;
+      }
+    }
   }
 
   setname() {
@@ -132,8 +163,8 @@ export class AppComponent implements OnInit {
         this.peervidref.src = window.URL.createObjectURL(stream)
       }
       this.peerVideo = true;
-      this.peervidref.muted = true;
       this.peervidref.play();
+      this.peervidref.isplay = true;
     }
   }
 

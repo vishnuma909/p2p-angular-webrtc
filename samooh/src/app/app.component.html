@@ -13,9 +13,9 @@
 </div>
 <mat-sidenav-container *ngIf="isSet" class="tp_container">
   <mat-sidenav mode = "side" opened>
-    <h1>Messages</h1>
+    <h1 id="msg_head">Messages</h1>
     <div *ngFor="let msg of msgs">
-      <b>{{msg.user}}</b> : {{msg.message}}
+      <b>{{checkIfMe(msg.user)}}</b> : {{msg.message}}
     </div>
     <div class="message_area">
       <mat-form-field>
@@ -40,11 +40,25 @@
       <div class="row" [style.visibility]="(vidstart) ? 'visible' : 'hidden'" style="padding-top: 30px;">
         <div class="column">
           <video #userVid src=""></video>
-          <button mat-raised-button class="user_btn" (click)="muteVideo()">Mute/Unmute</button>
+          <button mat-mini-fab class="user_btn" (click)="muteVideo()">
+            <mat-icon *ngIf="!initvidref.muted">mic</mat-icon>
+            <mat-icon *ngIf="initvidref.muted">mic_off</mat-icon>
+          </button>
+          <button mat-mini-fab class="user_btn pp" (click)="playpause('user')">
+            <mat-icon *ngIf="initvidref.isplay">play_arrow</mat-icon>
+            <mat-icon *ngIf="!initvidref.isplay">pause</mat-icon>
+          </button>
         </div>
-        <div class="column" style="text-align: right;" [hidden]="!peerVideo">
+        <div class="column" [hidden]="!peerVideo">
           <video #peerVid src=""></video>
-          <button mat-raised-button class="user_btn" (click)="mutePeerVideo()">Mute/Unmute</button>
+          <button mat-mini-fab class="user_btn" (click)="mutePeerVideo()">
+            <mat-icon *ngIf="!peervidref.muted">mic</mat-icon>
+            <mat-icon *ngIf="peervidref.muted">mic_off</mat-icon>
+          </button>
+          <button mat-mini-fab class="user_btn pp" (click)="playpause('peer')">
+            <mat-icon *ngIf="peervidref.isplay">play_arrow</mat-icon>
+            <mat-icon *ngIf="!peervidref.isplay">pause</mat-icon>
+          </button>
         </div>
       </div>
       <br>

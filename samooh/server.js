@@ -1,6 +1,6 @@
 var express = require("./node_modules/express");
 var app = express();
-var http = require('http').Server(app)
+var http = require('http').Server(app);
 var io = require('./node_modules/socket.io')(http);
 
 http.listen(3000,"127.0.0.1");

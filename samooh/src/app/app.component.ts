@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import * as io from 'socket.io-client';
 import SimplePeer from 'simple-peer';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',
@@ -21,23 +23,31 @@ export class AppComponent implements OnInit {
   peer: any = {}
   window: any = window;
   isSet: any = false;
+  isOpen: any = true;
   @ViewChild('userVid') userVid: ElementRef;
   @ViewChild('peerVid') peerVid: ElementRef;
+  @ViewChild('sideNav') sideNav: MatSidenav;
   vidstart: any = false;
   videoObj: any = { video: true, audio: true }
   stream: any;
-  constructor() {
+  constructor(private snackbar: MatSnackBar) {
     this.socket = io("http://localhost:3000");
-    // this.socket = io();
   }
   ngOnInit() {
+    if(window.innerWidth <= 770) {
+      this.isOpen = false;
+    }
     this.setSocket(this.socket)
+  }
+
+  opencloseMsg() {
+    this.isOpen = !this.isOpen;
   }
 
   startVideo() {
     navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: true
+      audio: false
     }).then((stream)=>
     {
       this.stream = stream;
@@ -107,6 +117,7 @@ export class AppComponent implements OnInit {
     socket.on('userExists', (data) => {
       new Error(data)
     });
+    socket.on('exceeded',(data)=> {this.showExceeded(data)})
     socket.on('callPeer', (data) => {
       console.log('userset', 'success', data)
       this.isSet = true;
@@ -127,9 +138,18 @@ export class AppComponent implements OnInit {
     socket.on('Disconnect', () => {this._removePeer()})
   }
 
+  showExceeded(data) {
+    if(data) {
+      this.snackbar.open(data+'🍕','close',{duration: 5000})
+    }
+  }
+
   checkEnter(e) {
     if(e) {
-      (e.key === 'Enter' || e.keyCode === 13) ? this.send() : '';
+      if(e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        this.send()
+      }
     }
   }
 

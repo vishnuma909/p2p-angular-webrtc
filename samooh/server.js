@@ -15,9 +15,13 @@ io.on("connection", socket => {
                 let index = clients.indexOf(data);
                 if(index == -1) {
                     clients.push({name: data, id: socket.id});
-                    console.log(clients.indexOf(data), clients);
-                    socket.join(socket.id);
-                    socket.emit('callPeer', {client: data});
+                    if(clients.length > 2) {
+                        socket.emit('exceeded','cannot connect, limit exceeded');
+                    }else {
+                        console.log(clients.indexOf(data), clients);
+                        socket.join(socket.id);
+                        socket.emit('callPeer', {client: data});
+                    }
                 }else {
                     socket.emit('userExists', data + ' username is taken! Try some other username.');
                 }
@@ -45,6 +49,8 @@ io.on("connection", socket => {
                 socket.leave(socket.id);
                 clients.splice(clients.length-1, 1);
                 socket.broadcast.emit("Disconnect")
+            }else {
+                clients.splice(2, clients.length)
             }
         }
         console.log(clients)

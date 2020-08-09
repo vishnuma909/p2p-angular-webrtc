@@ -12,10 +12,14 @@
   </mat-grid-list>
 </div>
 <mat-sidenav-container *ngIf="isSet" class="tp_container">
-  <mat-sidenav mode = "side" opened>
-    <h1 id="msg_head">Messages</h1>
-    <div *ngFor="let msg of msgs">
-      <b>{{checkIfMe(msg.user)}}</b> : {{msg.message}}
+  <mat-sidenav #sideNav from="left" mode="side" [(opened)]="isOpen">
+    <h1 id="msg_head">
+      Messages
+    </h1>
+    <div class="msg_container">
+      <div *ngFor="let msg of msgs">
+        <b>{{checkIfMe(msg.user)}}</b> : {{msg.message}}
+      </div>
     </div>
     <div class="message_area">
       <mat-form-field>
@@ -31,6 +35,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="etc_container">
+      <span class="menu_cc" (click)="opencloseMsg()"><mat-icon>menu</mat-icon></span>
       <h1 class="etc_heading" *ngIf="username != ''">{{username}}</h1>
       <div id="peer_connect">
         <button type="button" mat-raised-button [disabled]="peerVideo" (click)="_makePeer()">Connect to peer</button>
